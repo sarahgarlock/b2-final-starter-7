@@ -1,5 +1,4 @@
 class Coupon < ApplicationRecord
   belongs_to :merchant
-
-  # validates_presence_of :name, :code, :percent_off
+  has_many :invoices, through: :merchant
 end
