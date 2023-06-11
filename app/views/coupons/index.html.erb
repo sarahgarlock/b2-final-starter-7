@@ -1,4 +1,15 @@
 <% @coupons.each do |coupon| %>
-  <h2>Coupon Name: <%= link_to coupon.name, "merchants/#{@merchant.id}/coupons/#{coupon.id}" %></h2>
-  <p>Amount Off: <%= coupon.value %>%</p>
+  <div class="coupon">
+    <h2>Coupon Name: <%= link_to coupon.name, "merchants/#{coupon.merchant.id}/coupons/#{coupon.id}" %></h2>
+    <p>Amount Off: <%= coupon.value %></p>
+    <p>Amount Type: <%= coupon.amount_type %></p>
+    <p>Code: <%= coupon.code %></p>
+    <p>Status: <%= coupon.status %></p>
+    <label>
+      <input type="checkbox" id="coupon_<%= coupon.id %>_active" name="coupon[<%= coupon.id %>][active]">
+      Active
+    </label>
+  </div>
 <% end %>
+
+<p><%= link_to "Create New Coupon", new_merchant_coupon_path(@merchant) %></p>

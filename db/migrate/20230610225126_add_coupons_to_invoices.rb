@@ -1,4 +1,4 @@
-class AddForeignKeyToInvoices < ActiveRecord::Migration[7.0]
+class AddCouponsToInvoices < ActiveRecord::Migration[7.0]
   def change
     add_reference :invoices, :coupon, foreign_key: true
   end
