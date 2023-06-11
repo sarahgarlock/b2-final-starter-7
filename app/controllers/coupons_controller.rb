@@ -22,9 +22,12 @@ class CouponsController < ApplicationController
       render :new
     end
   end
-  
-  
 
+  def show
+    @merchant = Merchant.find(params[:merchant_id]) 
+    @coupon = Coupon.find(params[:id])
+  end
+  
   private
 
   def coupon_params
