@@ -9,3 +9,11 @@
 <% end %>
 <p>Status: <%= @coupon.status %></p>
 <p>Times Used: <%= @coupon.times_used %></p>
+
+<% if @coupon.status == ("active") %> 
+  <p><%= button_to "Deactivate Coupon", method: :patch, merchant: @merchant.id, :deactivate => true %></p>
+<% else %>
+  <p><%= button_to "Activate Coupon", method: :patch, :merchant => @merchant.id, :activate => true %></p>
+<% end %>
+
+<%= link_to "Coupon Index Page", merchant_coupons_path(@merchant) %>
