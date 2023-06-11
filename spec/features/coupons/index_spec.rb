@@ -5,10 +5,11 @@ RSpec.describe 'Merchant Coupons Index Page' do
     @merchant1 = Merchant.create!(name: "Hair Care")
     @coupon1 = @merchant1.coupons.create!(name: "10% off", code: "10%OFF", value: 10, amount_type: 0)
     @coupon2 = @merchant1.coupons.create!(name: "20% off", code: "20%OFF", value: 20, amount_type: 0)
-    @coupon3 = @merchant1.coupons.create!(name: "$30 off", code: "$30OFF", value: 30, amount_type: 1)
+    @coupon3 = @merchant1.coupons.create!(name: "$30 off", code: "$30OFF", value: 30, amount_type: 1, status: 0)
     @coupon4 = @merchant1.coupons.create!(name: "40% off", code: "40%OFF", value: 40, amount_type: 0)
     @coupon5 = @merchant1.coupons.create!(name: "50% off", code: "50%OFF", value: 50, amount_type: 0)
     @coupon6 = @merchant1.coupons.create!(name: "60% off", code: "60%OFF", value: 60, amount_type: 0)
+    @coupon7 = @merchant1.coupons.create!(name: "$70 off", code: "$70OFF", value: 70, amount_type: 1, status: 0)
 
     visit "/merchants/#{@merchant1.id}/coupons"
   end
@@ -75,18 +76,28 @@ RSpec.describe 'Merchant Coupons Index Page' do
     #   expect(@merchant1.coupons.active.count).to eq(5)
     # end
   end
+
+  it 'separates active and inactive coupons' do
+    expect(page).to have_content("Active Coupons")
+    expect(page).to have_content("Inactive Coupons")
+
+    within "#active-coupons" do
+      expect(page).to have_content("Coupon Name: #{@coupon3.name}")
+      expect(page).to have_content("Coupon Name: #{@coupon7.name}")
+
+      expect(page).to_not have_content("Coupon Name: #{@coupon1.name}")
+      expect(page).to_not have_content("Coupon Name: #{@coupon2.name}")
+    end
+
+    within "#inactive-coupons" do
+      expect(page).to have_content("#{@coupon1.name}")
+      expect(page).to have_content("#{@coupon2.name}")
+      expect(page).to have_content("#{@coupon4.name}")
+      expect(page).to have_content("#{@coupon5.name}")
+      expect(page).to have_content("#{@coupon6.name}")
+      
+      expect(page).to_not have_content("#{@coupon3.name}")
+      expect(page).to_not have_content("#{@coupon7.name}")
+    end
+  end
 end
-# As a merchant
-# When I visit my coupon index page 
-# I see a link to create a new coupon.
-# When I click that link 
-# I am taken to a new page where I see a form to add a new coupon.
-# When I fill in that form with a name, unique code, an amount, and whether that amount is a percent or a dollar amount
-# And click the Submit button
-# I'm taken back to the coupon index page 
-# And I can see my new coupon listed.
-
-
-# * Sad Paths to consider: 
-# 1. This Merchant already has 5 active coupons
-# 2. Coupon code entered is NOT unique
