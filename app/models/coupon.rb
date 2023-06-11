@@ -8,4 +8,10 @@ class Coupon < ApplicationRecord
   def self.coupon_code_exists?(code)
     exists?(code: code)
   end
+
+  def times_used
+    invoices.joins(:transactions)
+            .where(transactions: { result: :success })
+            .count
+  end
 end
