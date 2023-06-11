@@ -12,8 +12,11 @@ class CouponsController < ApplicationController
   def create
     @merchant = Merchant.find(params[:merchant_id]) 
     @coupon = @merchant.coupons.new(coupon_params)
-
-    if @coupon.save
+  
+    if Coupon.coupon_code_exists?(@coupon.code)
+      flash.now[:alert] = "Coupon code has already been taken"
+      redirect_to new_merchant_coupon_path(@merchant)
+    elsif @coupon.save
       redirect_to merchant_coupons_path(@merchant)
     else
       render :new
