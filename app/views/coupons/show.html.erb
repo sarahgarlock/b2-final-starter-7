@@ -1,0 +1,11 @@
+<h1>Coupon Show Page</h1> 
+
+<h3>Name: <%= @coupon.name %></h3>
+<p>Code: <%= @coupon.code %></p>
+<% if @coupon.amount_type == "percent" %>
+  <p>Discount Value: <%= @coupon.value %>%</p>
+<% else %>
+  <p>Discount Value: $<%= @coupon.value %></p>
+<% end %>
+<p>Status: <%= @coupon.status %></p>
+<p>Times Used: <%= @coupon.times_used %></p>
