@@ -13,6 +13,7 @@ RSpec.describe 'Merchant Coupons Show Page' do
     @coupon4 = @merchant1.coupons.create!(name: "40% off", code: "40%OFF", value: 40, amount_type: 0)
     @coupon5 = @merchant1.coupons.create!(name: "50% off", code: "50%OFF", value: 50, amount_type: 0)
     @coupon6 = @merchant1.coupons.create!(name: "60% off", code: "60%OFF", value: 60, amount_type: 0)
+    @coupon7 = @merchant1.coupons.create!(name: "70% off", code: "70%OFF", value: 70, amount_type: 0, status: 0)
 
     @invoice1 = Invoice.create!(customer_id: @customer1.id, status: 2, coupon_id: @coupon1.id)
     @invoice2 = Invoice.create!(customer_id: @customer1.id, status: 2, coupon_id: @coupon2.id)
@@ -20,6 +21,7 @@ RSpec.describe 'Merchant Coupons Show Page' do
     @invoice4 = Invoice.create!(customer_id: @customer2.id, status: 2, coupon_id: @coupon1.id)
     @invoice5 = Invoice.create!(customer_id: @customer2.id, status: 2, coupon_id: @coupon2.id)
     @invoice6 = Invoice.create!(customer_id: @customer2.id, status: 2, coupon_id: @coupon2.id)
+    @invoice7 = Invoice.create!(customer_id: @customer2.id, status: 2, coupon_id: @coupon7.id)
 
     @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id)
     @item_2 = Item.create!(name: "Conditioner", description: "This makes your hair shiny", unit_price: 8, merchant_id: @merchant1.id)
@@ -31,6 +33,7 @@ RSpec.describe 'Merchant Coupons Show Page' do
     @invoice_item3 = InvoiceItem.create!(item_id: @item_3.id, invoice_id: @invoice3.id, quantity: 1, unit_price: 5, status: 2)
     @invoice_item4 = InvoiceItem.create!(item_id: @item_4.id, invoice_id: @invoice4.id, quantity: 1, unit_price: 1, status: 2)
     @invoice_item5 = InvoiceItem.create!(item_id: @item_4.id, invoice_id: @invoice5.id, quantity: 1, unit_price: 1, status: 2)
+    @invoice_item6 = InvoiceItem.create!(item_id: @item_4.id, invoice_id: @invoice7.id, quantity: 1, unit_price: 1, status: 2)
 
     @transaction1 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice1.id)
     @transaction2 = Transaction.create!(credit_card_number: 230948, result: 1, invoice_id: @invoice2.id)
@@ -38,6 +41,7 @@ RSpec.describe 'Merchant Coupons Show Page' do
     @transaction4 = Transaction.create!(credit_card_number: 230429, result: 1, invoice_id: @invoice4.id)
     @transaction5 = Transaction.create!(credit_card_number: 102938, result: 1, invoice_id: @invoice5.id)
     @transaction6 = Transaction.create!(credit_card_number: 102938, result: 0, invoice_id: @invoice6.id)
+    @transaction7 = Transaction.create!(credit_card_number: 102938, result: 1, invoice_id: @invoice7.id)
 
   end
   
@@ -63,5 +67,43 @@ RSpec.describe 'Merchant Coupons Show Page' do
     
       expect(page).to have_content("Times Used: 2")
     end
+
+    it 'has a button to deactivate the coupon' do
+      visit "/merchants/#{@merchant1.id}/coupons/#{@coupon7.id}"
+
+      expect(@coupon7.status).to eq("active")
+      expect(page).to have_button("Deactivate Coupon")
+
+      click_button "Deactivate Coupon"
+
+      expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/#{@coupon7.id}")
+      save_and_open_page
+      expect(page).to have_content("Status: inactive")
+    end
+
+    it 'has a button to activate the coupon' do
+      visit "/merchants/#{@merchant1.id}/coupons/#{@coupon5.id}"
+
+      expect(@coupon5.status).to eq("inactive")
+      expect(page).to have_button("Activate Coupon")
+
+      click_button "Activate Coupon"
+
+      expect(current_path).to eq(merchant_coupon_path(@merchant1, @coupon5))
+      expect(page).to have_content("Status: active")
+
+    end
   end
 end
+
+# 4. Merchant Coupon Deactivate
+
+# As a merchant 
+# When I visit one of my active coupon's show pages
+# I see a button to deactivate that coupon
+# When I click that button
+# I'm taken back to the coupon show page 
+# And I can see that its status is now listed as 'inactive'.
+
+# * Sad Paths to consider: 
+# 1. A coupon cannot be deactivated if there are any pending invoices with that coupon.
