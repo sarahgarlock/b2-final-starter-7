@@ -1,14 +1,11 @@
 <% @coupons.each do |coupon| %>
   <div class="coupon">
   <h2><%= link_to "Coupon Name: #{coupon.name}", "/merchants/#{@merchant.id}/coupons/#{coupon.id}" %></h2>
-    <p>Amount Off: <%= coupon.value %></p>
-    <p>Amount Type: <%= coupon.amount_type %></p>
-    <p>Code: <%= coupon.code %></p>
-    <p>Status: <%= coupon.status %></p>
-    <label>
-      <input type="checkbox" id="coupon_<%= coupon.id %>_active" name="coupon[<%= coupon.id %>][active]">
-      Active
-    </label>
+    <% if coupon.amount_type == "percent" %>
+      <p>Amount Off: <%= coupon.value %>%</p>
+    <% else %>
+      <p>Amount Off: $<%= coupon.value %></p>
+    <% end %>
   </div>
 <% end %>
 
