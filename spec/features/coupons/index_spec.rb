@@ -12,25 +12,17 @@ RSpec.describe 'Merchant Coupons Index Page' do
 
     visit "/merchants/#{@merchant1.id}/coupons"
   end
-  describe 'As a merchant, when I visit my merchant index page' do
-    it 'display all of my coupon attributes and links to that coupon show page' do
+  describe 'As a merchant, when I visit my coupons index page' do
+    it 'display all of my coupon\'s name, amount off and link to that show page' do
       expect(page).to have_link("Coupon Name: #{@coupon1.name}")
-      expect(page).to have_content("Amount Off: #{@coupon1.value}")
-      expect(page).to have_content("Code: #{@coupon1.code}")
-      expect(page).to have_content("Amount Type: percent") # needs to check in a within block
-      expect(page).to have_content("Status: #{@coupon1.status}")
-
+      expect(page).to have_content("Amount Off: #{@coupon1.value}%")
+      
       expect(page).to have_content("Coupon Name: #{@coupon2.name}")
-      expect(page).to have_content("Amount Off: #{@coupon2.value}")
-      expect(page).to have_content("Code: #{@coupon2.code}")
-      expect(page).to have_content("Amount Type: percent") # needs to check in a within block
-      expect(page).to have_content("Status: #{@coupon2.status}")
-
+      expect(page).to have_content("Amount Off: #{@coupon2.value}%")
+      
       expect(page).to have_content("Coupon Name: #{@coupon3.name}")
-      expect(page).to have_content("Amount Off: #{@coupon3.value}")
-      expect(page).to have_content("Code: #{@coupon3.code}")
-      expect(page).to have_content("Amount Type: dollar") # needs to check in a within block
-      expect(page).to have_content("Status: #{@coupon3.status}")
+      expect(page).to have_content("Amount Off: $#{@coupon3.value}")
+  
       click_link("Coupon Name: #{@coupon1.name}")
 
       expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/#{@coupon1.id}")
