@@ -10,11 +10,11 @@ RSpec.describe 'Merchant Coupons Index Page' do
     @coupon5 = @merchant1.coupons.create!(name: "50% off", code: "50%OFF", value: 50, amount_type: 0)
     @coupon6 = @merchant1.coupons.create!(name: "60% off", code: "60%OFF", value: 60, amount_type: 0)
 
-    visit merchant_coupons_path(@merchant1)
+    visit "/merchants/#{@merchant1.id}/coupons"
   end
   describe 'As a merchant, when I visit my merchant index page' do
-    it 'display all of my coupon attributes' do
-      expect(page).to have_content("Coupon Name: #{@coupon1.name}")
+    it 'display all of my coupon attributes and links to that coupon show page' do
+      expect(page).to have_link("Coupon Name: #{@coupon1.name}")
       expect(page).to have_content("Amount Off: #{@coupon1.value}")
       expect(page).to have_content("Code: #{@coupon1.code}")
       expect(page).to have_content("Amount Type: percent") # needs to check in a within block
@@ -31,6 +31,9 @@ RSpec.describe 'Merchant Coupons Index Page' do
       expect(page).to have_content("Code: #{@coupon3.code}")
       expect(page).to have_content("Amount Type: dollar") # needs to check in a within block
       expect(page).to have_content("Status: #{@coupon3.status}")
+      click_link("Coupon Name: #{@coupon1.name}")
+
+      expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/#{@coupon1.id}")
     end
 
     it 'has a link to create a new coupon and can create new coupons' do
