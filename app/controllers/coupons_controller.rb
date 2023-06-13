@@ -2,6 +2,7 @@ class CouponsController < ApplicationController
   def index
     @coupons = Coupon.includes(:merchant)
     @merchant = Merchant.find(params[:merchant_id])
+    @holidays_us = Holiday.new.fetch_upcoming_holidays(3)
   end
 
   def new
