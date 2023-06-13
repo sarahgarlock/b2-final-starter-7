@@ -14,6 +14,15 @@
       <% end %>
   <p>Created on: <%= @invoice.created_at.strftime("%A, %B %d, %Y") %>
   <p>Total Revenue: <%= number_to_currency(@invoice.total_revenue) %>
+  <p>
+  <% if @invoice.coupon.present? %>
+    <p><%= "Coupon Applied: #{@invoice.coupon.name}" %></p>
+    <p><%= "Code: #{@invoice.coupon.code}" %></p>
+  <% else %>
+    No Coupon Applied
+  <% end %>
+  <p><strong>Grand Total Revenue After Discount: </strong><%= number_to_currency(@invoice.total_revenue_after_discount) %></p>
+  </p> 
 
   <h4>Customer:</h4>
     <%= @invoice.customer.first_name %> <%= @invoice.customer.last_name %><br>
