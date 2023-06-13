@@ -70,7 +70,6 @@ RSpec.describe 'Merchant Coupons Show Page' do
 
     it 'has a button to deactivate the coupon' do
       visit "/merchants/#{@merchant1.id}/coupons/#{@coupon7.id}"
-
       expect(@coupon7.status).to eq("active")
       expect(page).to have_button("Deactivate Coupon")
 
@@ -90,7 +89,7 @@ RSpec.describe 'Merchant Coupons Show Page' do
 
       expect(current_path).to eq(merchant_coupon_path(@merchant1, @coupon5))
       expect(page).to have_content("Status: active")
-
+      save_and_open_page
     end
   end
 end
