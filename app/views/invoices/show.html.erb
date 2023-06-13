@@ -45,6 +45,15 @@
           </tr>
         </section>
       <% end %>
+    <p>Grand Total Revenue After Discount: <%= number_to_currency(@invoice.total_revenue_after_discount) %></p>
+    <p>
+      <% if @invoice.coupon.present? %>
+        <%= link_to "Coupon Name: #{@invoice.coupon.name}", merchant_coupon_path(@merchant, @invoice.coupon) %>
+        <p><%= "Code: #{@invoice.coupon.code}" %></p>
+      <% else %>
+        No Coupon Applied
+      <% end %>
+    </p>    
     </tbody>
   </table>
 
