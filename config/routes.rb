@@ -13,7 +13,5 @@ Rails.application.routes.draw do
     resources :merchant_status, only: [:update]
     resources :invoices, except: [:new, :destroy]
   end
-  post "/merchants/:id/coupons/new", to: "coupons#create"
   post "/merchants/:id/coupons/:id", to: "coupons#update"
-  patch "/merchants/:id/coupons/:id", to: "coupons#update", as: :update_coupon
 end
