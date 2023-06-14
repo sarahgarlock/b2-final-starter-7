@@ -89,7 +89,6 @@ RSpec.describe 'Merchant Coupons Show Page' do
 
       expect(current_path).to eq(merchant_coupon_path(@merchant1, @coupon5))
       expect(page).to have_content("Status: active")
-      save_and_open_page
     end
   end
 end

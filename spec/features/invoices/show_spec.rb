@@ -32,7 +32,6 @@ RSpec.describe "invoices show" do
     @invoice_5 = Invoice.create!(customer_id: @customer_4.id, status: 2)
     @invoice_6 = Invoice.create!(customer_id: @customer_5.id, status: 2)
     @invoice_7 = Invoice.create!(customer_id: @customer_6.id, status: 2, coupon_id: @coupon3.id)
-
     @invoice_8 = Invoice.create!(customer_id: @customer_6.id, status: 1)
 
     @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 9, unit_price: 10, status: 2)
@@ -105,32 +104,26 @@ RSpec.describe "invoices show" do
   it 'shows the grand total revene after discount was applied' do
     visit merchant_invoice_path(@merchant1, @invoice_1)
 
-    within(".table") do
-      expect(page).to have_content("Grand Total Revenue After Discount")
-      expect(page).to have_content(@invoice_1.total_revenue_after_discount)
-      expect(page).to have_content("$145.80")
-    end
+    expect(page).to have_content("Grand Total Revenue After Discount")
+    expect(page).to have_content(@invoice_1.total_revenue_after_discount)
+    expect(page).to have_content("$145.80")
 
-    visit merchant_invoice_path(@merchant1, @invoice_7)
+    visit merchant_invoice_path(@merchant2, @invoice_7)
 
-    within(".table") do
-      expect(page).to have_content("Grand Total Revenue After Discount")
-      expect(page).to have_content(@invoice_7.total_revenue_after_discount)
-      expect(page).to have_content("$40.00")
-    end
+    expect(page).to have_content("Grand Total Revenue After Discount")
+    expect(page).to have_content(@invoice_7.total_revenue_after_discount)
+    expect(page).to have_content("$40.00")
   end
 
   it 'shows the name and code of the coupon used as a link to that coupon show page' do
     visit merchant_invoice_path(@merchant1, @invoice_1)
 
-    within(".table") do
-      expect(page).to have_content("#{@coupon1.name}")
-      expect(page).to have_content("#{@coupon1.code}")
-      expect(page).to have_link("Coupon Name: #{@coupon1.name}")
+    expect(page).to have_content("#{@coupon1.name}")
+    expect(page).to have_content("#{@coupon1.code}")
+    expect(page).to have_link("Coupon Name: #{@coupon1.name}")
 
-      click_link("#{@coupon1.name}")
+    click_link("#{@coupon1.name}")
 
-      expect(current_path).to eq(merchant_coupon_path(@merchant1, @coupon1))
-    end
+    expect(current_path).to eq(merchant_coupon_path(@merchant1, @coupon1))
   end
 end
