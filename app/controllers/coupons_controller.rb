@@ -33,9 +33,8 @@ class CouponsController < ApplicationController
     @coupon = Coupon.find(params[:id])
   
     if params[:deactivate] == "true"
-      if @merchant.check_invoice_status?
-        @coupon.update(status: "inactive")
-      end
+      @merchant.check_invoice_status?
+      @coupon.update(status: "inactive")
     elsif params[:activate] == "true"
       if @merchant.coupon_count?
         flash[:alert] = "Error: Too many active coupons"
@@ -46,6 +45,7 @@ class CouponsController < ApplicationController
   
     redirect_to merchant_coupon_path(@merchant, @coupon)
   end
+
   
   private
 

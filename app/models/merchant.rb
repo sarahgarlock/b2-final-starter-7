@@ -64,7 +64,7 @@ class Merchant < ApplicationRecord
   end
 
   def coupon_count?
-    coupons.where(status: 1).count >= 5
+    coupons.where(status: 0).count >= 5
   end
 
   def check_invoice_status?
