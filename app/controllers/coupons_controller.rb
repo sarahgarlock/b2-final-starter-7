@@ -28,17 +28,22 @@ class CouponsController < ApplicationController
     @coupon = Coupon.find(params[:id])
   end
 
+
   def update
     @merchant = Merchant.find(params[:merchant]) 
     @coupon = Coupon.find(params[:id])
-    if params[:deactivate] == "true"
+    if params[:deactivate] == "true" && @merchant.check_invoice_status? == true
       @coupon.update(status: "inactive")
-    else
+    elsif params[:activate] == "true" && @merchant.coupon_count? == false
       @coupon.update(status: "active")
+    elsif params[:activate] == "true" && @merchant.coupon_count? == true
+      flash[:alert] = "Error: Too many active coupons"
+    elsif params[:deactivate] == "true" && @merchant.check_invoice_status? == false
+      flash[:alert] = "Error: Cannot deactivate coupons with invoices in progress"
     end
-    @coupon.save
-    redirect_to "/merchants/#{@merchant.id}/coupons/#{@coupon.id}"
+    redirect_to merchant_coupon_path(@merchant, @coupon)
   end
+  
   
   private
 
