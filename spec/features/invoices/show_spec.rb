@@ -101,6 +101,7 @@ RSpec.describe "invoices show" do
       expect(page).to_not have_content("in progress")
     end
   end
+  # User Storoy 7
   it 'shows the grand total revene after discount was applied' do
     visit merchant_invoice_path(@merchant1, @invoice_1)
 
@@ -114,7 +115,7 @@ RSpec.describe "invoices show" do
     expect(page).to have_content(@invoice_7.total_revenue_after_discount)
     expect(page).to have_content("$40.00")
   end
-
+  # User Story 7
   it 'shows the name and code of the coupon used as a link to that coupon show page' do
     visit merchant_invoice_path(@merchant1, @invoice_1)
 

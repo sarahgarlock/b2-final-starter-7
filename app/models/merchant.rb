@@ -62,4 +62,12 @@ class Merchant < ApplicationRecord
   def disabled_items
     items.where(status: 0)
   end
+
+  def coupon_count?
+    coupons.where(status: 1).count >= 5
+  end
+
+  def check_invoice_status?
+    invoices.where(status: 1).count == 0
+  end
 end

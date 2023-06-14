@@ -120,6 +120,7 @@ RSpec.describe "merchant dashboard" do
     expect(page).to have_content(@invoice_1.created_at.strftime("%A, %B %-d, %Y"))
   end
 
+  # User Story 1
   it "displays a link to view all my coupons" do
     expect(page).to have_link("Coupons")
     click_link "Coupons"

@@ -169,5 +169,13 @@ RSpec.describe Merchant, type: :model do
       expect(@merchant1.disabled_items).to eq([@item_2, @item_3, @item_4, @item_7, @item_8])
       expect(@merchant2.disabled_items).to eq([@item_5, @item_6])
     end
+
+    it "coupon_count?" do 
+      expect(@merchant1.coupon_count?).to eq(false)
+    end
+
+    it "check_invoice_status?" do 
+      expect(@merchant1.check_invoice_status?).to eq(false)
+    end
   end
 end
