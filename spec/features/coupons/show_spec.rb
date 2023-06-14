@@ -92,7 +92,6 @@ RSpec.describe 'Merchant Coupons Show Page' do
 
       expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/#{@coupon7.id}")
       expect(page).to have_content("Status: inactive")
-      save_and_open_page
     end
 
     # User Story 5
