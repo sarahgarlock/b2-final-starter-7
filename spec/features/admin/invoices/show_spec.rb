@@ -83,6 +83,7 @@ describe "Admin Invoices Index Page" do
     end
   end
 
+  # User Story 8
   it 'displays the name and code of the coupon that was used for percent off coupons' do
     visit admin_invoice_path(@i3)
 

@@ -11,8 +11,10 @@ RSpec.describe 'Merchant Coupons Index Page' do
     @coupon6 = @merchant1.coupons.create!(name: "60% off", code: "60%OFF", value: 60, amount_type: 0)
     @coupon7 = @merchant1.coupons.create!(name: "$70 off", code: "$70OFF", value: 70, amount_type: 1, status: 0)
 
-    visit "/merchants/#{@merchant1.id}/coupons"
+    visit merchant_coupons_path(@merchant1)
   end
+  
+  # User Story 1
   describe 'As a merchant, when I visit my coupons index page' do
     it 'display all of my coupon\'s name, amount off and link to that show page' do
       expect(page).to have_link("Coupon Name: #{@coupon1.name}")
@@ -26,9 +28,10 @@ RSpec.describe 'Merchant Coupons Index Page' do
   
       click_link("Coupon Name: #{@coupon1.name}")
 
-      expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/#{@coupon1.id}")
+      expect(current_path).to eq(merchant_coupon_path(@merchant1, @coupon1))
     end
 
+    # User Story 2
     it 'has a link to create a new coupon and can create new coupons' do
       expect(page).to have_link("Create New Coupon")
 
@@ -51,6 +54,7 @@ RSpec.describe 'Merchant Coupons Index Page' do
       expect(page).to have_content("70% off")
     end
 
+    # User Story 2 - Sad Path for unique coupon code
     it 'displays and error message if coupon code is not unique' do
       click_link "Create New Coupon"
 
@@ -64,40 +68,29 @@ RSpec.describe 'Merchant Coupons Index Page' do
       expect(page).to have_content("Coupon code has already been taken")
     end
 
-    # it 'displays an error message if a merchant has over 5 active coupons' do
-    #   save_and_open_page
-    #   check "coupon_1_active"
-    #   check "coupon_2_active"
-    #   check "coupon_3_active"
-    #   check "coupon_4_active"
-    #   check "coupon_5_active"
-    #   check "coupon_6_active"
-    #   expect(page).to have_content("You cannot have more than 5 active coupons")
-    #   expect(@merchant1.coupons.active.count).to eq(5)
-    # end
-  end
+    # User Story 6
+    it 'separates active and inactive coupons' do
+      expect(page).to have_content("Active Coupons")
+      expect(page).to have_content("Inactive Coupons")
 
-  it 'separates active and inactive coupons' do
-    expect(page).to have_content("Active Coupons")
-    expect(page).to have_content("Inactive Coupons")
+      within "#active-coupons" do
+        expect(page).to have_content("Coupon Name: #{@coupon3.name}")
+        expect(page).to have_content("Coupon Name: #{@coupon7.name}")
 
-    within "#active-coupons" do
-      expect(page).to have_content("Coupon Name: #{@coupon3.name}")
-      expect(page).to have_content("Coupon Name: #{@coupon7.name}")
+        expect(page).to_not have_content("Coupon Name: #{@coupon1.name}")
+        expect(page).to_not have_content("Coupon Name: #{@coupon2.name}")
+      end
 
-      expect(page).to_not have_content("Coupon Name: #{@coupon1.name}")
-      expect(page).to_not have_content("Coupon Name: #{@coupon2.name}")
-    end
-
-    within "#inactive-coupons" do
-      expect(page).to have_content("#{@coupon1.name}")
-      expect(page).to have_content("#{@coupon2.name}")
-      expect(page).to have_content("#{@coupon4.name}")
-      expect(page).to have_content("#{@coupon5.name}")
-      expect(page).to have_content("#{@coupon6.name}")
-      
-      expect(page).to_not have_content("#{@coupon3.name}")
-      expect(page).to_not have_content("#{@coupon7.name}")
+      within "#inactive-coupons" do
+        expect(page).to have_content("Coupon Name: #{@coupon1.name}")
+        expect(page).to have_content("Coupon Name: #{@coupon2.name}")
+        expect(page).to have_content("Coupon Name: #{@coupon4.name}")
+        expect(page).to have_content("Coupon Name: #{@coupon5.name}")
+        expect(page).to have_content("Coupon Name: #{@coupon6.name}")
+        
+        expect(page).to_not have_content("Coupon Name: #{@coupon3.name}")
+        expect(page).to_not have_content("Coupon Name: #{@coupon7.name}")
+      end
     end
   end
 end

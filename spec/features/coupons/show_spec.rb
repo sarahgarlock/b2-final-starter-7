@@ -48,10 +48,11 @@ RSpec.describe 'Merchant Coupons Show Page' do
     @transaction7 = Transaction.create!(credit_card_number: 102938, result: 1, invoice_id: @invoice7.id)
 
   end
-  
+  # User Story 3
   describe 'As a merchant, when I visit my coupon show page' do
     it 'displays all of my coupon attributes' do
       visit "/merchants/#{@merchant1.id}/coupons/#{@coupon1.id}"
+
       expect(page).to have_content("Name: #{@coupon1.name}")
       expect(page).to have_content("Code: #{@coupon1.code}")
       expect(page).to have_content("Discount Value: #{@coupon1.value}%")
@@ -59,6 +60,7 @@ RSpec.describe 'Merchant Coupons Show Page' do
       expect(page).to have_content("Times Used: 2")
       
       visit "/merchants/#{@merchant1.id}/coupons/#{@coupon3.id}"
+
       expect(page).to have_content("Name: #{@coupon3.name}")
       expect(page).to have_content("Code: #{@coupon3.code}")
       expect(page).to have_content("Discount Value: $#{@coupon3.value}")
@@ -66,12 +68,21 @@ RSpec.describe 'Merchant Coupons Show Page' do
       expect(page).to have_content("Times Used: 1")
     end
 
+    # User Story 3
     it 'displays times used' do
       visit "/merchants/#{@merchant1.id}/coupons/#{@coupon2.id}"
     
       expect(page).to have_content("Times Used: 2")
     end
 
+    # User Story 3
+    it 'should be limited to successful transactions' do
+      visit "/merchants/#{@merchant1.id}/coupons/#{@coupon2.id}"
+
+      expect(page).to_not have_content(@coupon7.name)
+    end
+
+    # User Story 4
     it 'has a button to deactivate the coupon' do
       visit "/merchants/#{@merchant1.id}/coupons/#{@coupon7.id}"
       expect(@coupon7.status).to eq("active")
@@ -83,6 +94,7 @@ RSpec.describe 'Merchant Coupons Show Page' do
       expect(page).to have_content("Status: inactive")
     end
 
+    # User Story 5
     it 'has a button to activate the coupon' do
       visit "/merchants/#{@merchant2.id}/coupons/#{@coupon8.id}"
 
@@ -93,6 +105,24 @@ RSpec.describe 'Merchant Coupons Show Page' do
 
       expect(current_path).to eq("/merchants/#{@merchant2.id}/coupons/#{@coupon8.id}")
       expect(page).to have_content("Status: active")
+    end
+
+    # Sad Path - Cannot actice more than 5 coupons
+    it 'cannot have more than 5 active coupons' do
+      @coupon9 = @merchant1.coupons.create!(name: "10% off", code: "10%OFF", value: 10, amount_type: 0, status: 0)
+      @coupon10 = @merchant1.coupons.create!(name: "10% off", code: "10%OFF", value: 10, amount_type: 0, status: 0)
+      @coupon11 = @merchant1.coupons.create!(name: "10% off", code: "10%OFF", value: 10, amount_type: 0, status: 0)
+      @coupon12 = @merchant1.coupons.create!(name: "10% off", code: "10%OFF", value: 10, amount_type: 0, status: 0)
+
+      visit "/merchants/#{@merchant1.id}/coupons/#{@coupon2.id}"
+      expect(page).to have_content("Status: inactive")
+      expect(page).to have_button("Activate")
+
+      click_button "Activate"
+  
+      expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/#{@coupon2.id}")
+      expect(page).to have_content("Error: Too many active coupons")
+      expect(page).to have_content("Status: inactive")
     end
   end
 end

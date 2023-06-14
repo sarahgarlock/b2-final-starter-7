@@ -16,10 +16,9 @@ class CouponsController < ApplicationController
     if Coupon.coupon_code_exists?(@coupon.code)
       flash[:alert] = "Coupon code has already been taken"
       redirect_to new_merchant_coupon_path(@merchant)
-    elsif @coupon.save
+    else 
+      @coupon.save
       redirect_to merchant_coupons_path(@merchant)
-    else
-      render :new
     end
   end
 
@@ -30,20 +29,23 @@ class CouponsController < ApplicationController
 
 
   def update
-    @merchant = Merchant.find(params[:merchant]) 
+    @merchant = Merchant.find(params[:merchant])
     @coupon = Coupon.find(params[:id])
-    if params[:deactivate] == "true" && @merchant.check_invoice_status? == true
-      @coupon.update(status: "inactive")
-    elsif params[:activate] == "true" && @merchant.coupon_count? == false
-      @coupon.update(status: "active")
-    elsif params[:activate] == "true" && @merchant.coupon_count? == true
-      flash[:alert] = "Error: Too many active coupons"
-    elsif params[:deactivate] == "true" && @merchant.check_invoice_status? == false
-      flash[:alert] = "Error: Cannot deactivate coupons with invoices in progress"
+  
+    if params[:deactivate] == "true"
+      if @merchant.check_invoice_status?
+        @coupon.update(status: "inactive")
+      end
+    elsif params[:activate] == "true"
+      if @merchant.coupon_count?
+        flash[:alert] = "Error: Too many active coupons"
+      else
+        @coupon.update(status: "active")
+      end
     end
+  
     redirect_to merchant_coupon_path(@merchant, @coupon)
   end
-  
   
   private
 
